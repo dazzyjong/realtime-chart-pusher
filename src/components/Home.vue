@@ -15,12 +15,12 @@
             <input class="form-control" placeholder="How much did you spend?" type="number" v-model="expenseamount" required>
           </div>
           <div class="form-group">
-            <label>Income</label>
-            <input class="form-control" placeholder="How much did you earn?" type="number" v-model="incomeamount" required>
+            <label>pitch</label>
+            <input class="form-control" placeholder="How much did you earn?" type="number" v-model="peakamount" required>
           </div>
           <div class="form-group">
             <label>Date</label>
-            <input class="form-control" placeholder="Date" type="date" v-model="entrydate" required>
+            <input class="form-control" placeholder="Date" type="phoneme_location" v-model="entrydate" required>
           </div>
           <div class="form-group">
             <button class="btn btn-primary">Add New Entry</button>
@@ -40,48 +40,44 @@
     components: {LineChart},
     data () {
       return {
-        expense: null,
-        income: null,
-        date: null,
-        expenseamount: null,
-        incomeamount: null,
-        datacollection: null,
-        entrydate: null
+        energy: null,
+        pitch: null,
+        phoneme_location: null,
+        datacollection: null
       }
-    },
-    created () {
-      this.fetchData()
-      this.fillData()
     },
     mounted () {
       this.fillData()
     },
     methods: {
       fillData () {
-        axios.get('/finances')
+        axios.get('https://raw.githubusercontent.com/dazzyjong/dazzyjong.github.io/master/attention-prosody-chart.json')
           .then(response => {
-            console.log(response.data.data)
-            let results = response.data.data
-            let dateresult = results.map(a => a.date)
-            let expenseresult = results.map(a => a.expense)
-            let incomeresult = results.map(a => a.income)
+            let results = response.data
+            let phonemeLocationResult = results.phoneme_location
+            let energyresult = results.energy
+            let pitchresult = results.pitch
 
-            this.expense = expenseresult
-            this.income = incomeresult
-            this.date = dateresult
+            console.log(phonemeLocationResult)
+            console.log(energyresult)
+            console.log(pitchresult)
+
+            this.energy = energyresult
+            this.pitch = pitchresult
+            this.phoneme_location = phonemeLocationResult
 
             this.datacollection = {
-              labels: this.date,
+              labels: this.phoneme_location,
               datasets: [
                 {
-                  label: 'Expense',
-                  backgroundColor: '#f87979',
-                  data: this.expense
+                  label: 'Energy',
+                  borderColor: '#f87979',
+                  data: this.energy
                 },
                 {
-                  label: 'Income',
-                  backgroundColor: '#5bf8bf',
-                  data: this.income
+                  label: 'Pitch',
+                  borderColor: '#5bf8bf',
+                  data: this.pitch
                 }
               ]
             }
@@ -89,14 +85,10 @@
           .catch(error => {
             console.log(error)
           })
-      },
+      }
       // addExpenses () {
 
-      // },
-
-      fetchData () {
-
-      }
+      // }
     }
   }
 </script>
