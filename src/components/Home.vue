@@ -2,12 +2,11 @@
   <div class="hello">
     <div class="container">
       <div class="row">
-        <h2 class="title">Realtime Chart with Vue and Pusher</h2>
-        <h3 class="subtitle">Expense and Income Tracker</h3>
+        <h2 class="title">Energy and Pitch</h2>
         <line-chart :chart-data="datacollection"></line-chart>
       </div>
     </div>
-    <div class="container">
+    <!-- <div class="container">
       <div class="row">
         <form class="form" @submit.prevent="addExpenses">
           <h4>Add New Entry</h4>
@@ -28,21 +27,13 @@
           </div>
         </form>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
   import axios from 'axios'
-  import moment from 'moment'
-  import Pusher from 'pusher-js'
   import LineChart from '@/components/LineChart'
-
-  const socket = new Pusher('APP_KEY', {
-    cluster: 'YOUR CLUSTER',
-    encrypted: true
-  })
-  const channel = socket.subscribe('finance')
 
   export default {
     name: 'home',
@@ -99,80 +90,12 @@
             console.log(error)
           })
       },
-      addExpenses () {
-        let expense = this.expenseamount
-        let income = this.incomeamount
-        let today = moment(this.entrydate).format('MMMM Do YYYY')
+      // addExpenses () {
 
-        axios.post('/expense/add', {
-          expense: expense,
-          income: income,
-          date: today
-        })
-          .then(response => {
-            this.expenseamount = ''
-            this.incomeamount = ''
-            this.entrydate = ''
-            channel.bind('new-expense', function (data) {
-              let results = data.newExpense.data
-
-              let dateresult = results.map(a => a.date)
-              let expenseresult = results.map(a => a.expense)
-              let incomeresult = results.map(a => a.income)
-
-              this.expense = expenseresult
-              this.income = incomeresult
-              this.date = dateresult
-
-              this.datacollection = {
-                labels: this.date,
-                datasets: [
-                  {
-                    label: 'Expense',
-                    backgroundColor: 'transparent',
-                    pointBorderColor: '#f87979',
-                    data: this.expense
-                  },
-                  {
-                    label: 'Income',
-                    backgroundColor: 'transparent',
-                    pointBorderColor: '#5bf8bf',
-                    data: this.income
-                  }
-                ]
-              }
-            })
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      },
+      // },
 
       fetchData () {
-        channel.bind('new-expense', data => {
-          let _results = data.newExpense.data
-          let dateresult = _results.map(a => a.date)
-          let expenseresult = _results.map(a => a.expense)
-          let incomeresult = _results.map(a => a.income)
-          this.expense = expenseresult
-          this.income = incomeresult
-          this.date = dateresult
-          this.datacollection = {
-            labels: this.date,
-            datasets: [
-              {
-                label: 'Expense Charts',
-                backgroundColor: '#f87979',
-                data: this.expense
-              },
-              {
-                label: 'Income Charts',
-                backgroundColor: '#5bf8bf',
-                data: this.income
-              }
-            ]
-          }
-        })
+
       }
     }
   }
