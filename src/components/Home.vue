@@ -4,6 +4,11 @@
       <div class="row">
         <h2 class="title">Energy and Pitch</h2>
         <line-chart :chart-data="datacollection"></line-chart>
+        
+        <vue-file-input :detectPaste="false" @change="onFileInputChange">
+            Open or Drag your files here
+        </vue-file-input>
+        
       </div>
     </div>
     <!-- <div class="container">
@@ -32,7 +37,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import LineChart from '@/components/LineChart'
 
   export default {
@@ -47,44 +51,44 @@
       }
     },
     mounted () {
-      this.fillData()
     },
     methods: {
-      fillData () {
-        axios.get('https://raw.githubusercontent.com/dazzyjong/dazzyjong.github.io/master/attention-prosody-chart.json')
-          .then(response => {
-            let results = response.data
-            let phonemeLocationResult = results.phoneme_location
-            let energyresult = results.energy
-            let pitchresult = results.pitch
+      fillData (results) {
+        let phonemeLocationResult = results.phoneme_location
+        let energyresult = results.energy
+        let pitchresult = results.pitch
 
-            console.log(phonemeLocationResult)
-            console.log(energyresult)
-            console.log(pitchresult)
+        this.energy = energyresult
+        this.pitch = pitchresult
+        this.phoneme_location = phonemeLocationResult
 
-            this.energy = energyresult
-            this.pitch = pitchresult
-            this.phoneme_location = phonemeLocationResult
-
-            this.datacollection = {
-              labels: this.phoneme_location,
-              datasets: [
-                {
-                  label: 'Energy',
-                  borderColor: '#f87979',
-                  data: this.energy
-                },
-                {
-                  label: 'Pitch',
-                  borderColor: '#5bf8bf',
-                  data: this.pitch
-                }
-              ]
+        this.datacollection = {
+          labels: this.phoneme_location,
+          datasets: [
+            {
+              label: 'Energy',
+              borderColor: '#f87979',
+              data: this.energy
+            },
+            {
+              label: 'Pitch',
+              borderColor: '#5bf8bf',
+              data: this.pitch
             }
-          })
-          .catch(error => {
-            console.log(error)
-          })
+          ]
+        }
+      },
+      onFileInputChange (e) {
+        const reader = new FileReader()
+        reader.onload = e => {
+          try {
+            var json = JSON.parse(e.target.result)
+            this.fillData(json)
+          } catch (ex) {
+            alert('ex when trying to parse json = ' + ex)
+          }
+        }
+        reader.readAsText(e.detail.files[0])
       }
       // addExpenses () {
 
