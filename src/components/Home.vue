@@ -8,31 +8,10 @@
         <vue-file-input :detectPaste="false" @change="onFileInputChange">
             Open or Drag your files here
         </vue-file-input>
-        
+        <button class="btn btn-primary" v-on:click="download">Download</button>
+
       </div>
     </div>
-    <!-- <div class="container">
-      <div class="row">
-        <form class="form" @submit.prevent="addExpenses">
-          <h4>Add New Entry</h4>
-          <div class="form-group">
-            <label>Expenses</label>
-            <input class="form-control" placeholder="How much did you spend?" type="number" v-model="expenseamount" required>
-          </div>
-          <div class="form-group">
-            <label>pitch</label>
-            <input class="form-control" placeholder="How much did you earn?" type="number" v-model="peakamount" required>
-          </div>
-          <div class="form-group">
-            <label>Date</label>
-            <input class="form-control" placeholder="Date" type="phoneme_location" v-model="entrydate" required>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary">Add New Entry</button>
-          </div>
-        </form>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -44,9 +23,10 @@
     components: {LineChart},
     data () {
       return {
+        results: null,
         energy: null,
         pitch: null,
-        phoneme_location: null,
+        phonemeLocation: null,
         energydatacollection: null,
         pitchdatacollection: null
       }
@@ -54,17 +34,17 @@
     mounted () {
     },
     methods: {
-      fillData (results) {
-        let phonemeLocationResult = results.phoneme_location
-        let energyresult = results.energy
-        let pitchresult = results.pitch
+      fillData () {
+        let phonemeLocationResult = this.results.phoneme_location
+        let energyresult = this.results.energy
+        let pitchresult = this.results.pitch
 
         this.energy = energyresult
         this.pitch = pitchresult
-        this.phoneme_location = phonemeLocationResult
+        this.phonemeLocation = phonemeLocationResult
 
         this.energydatacollection = {
-          labels: this.phoneme_location,
+          labels: this.phonemeLocation,
           datasets: [
             {
               label: 'Energy',
@@ -74,7 +54,7 @@
           ]
         }
         this.pitchdatacollection = {
-          labels: this.phoneme_location,
+          labels: this.phonemeLocation,
           datasets: [
             {
               label: 'Pitch',
@@ -88,17 +68,20 @@
         const reader = new FileReader()
         reader.onload = e => {
           try {
-            var json = JSON.parse(e.target.result)
-            this.fillData(json)
+            this.results = JSON.parse(e.target.result)
+            this.fillData()
           } catch (ex) {
             alert('ex when trying to parse json = ' + ex)
           }
         }
         reader.readAsText(e.detail.files[0])
+      },
+      download () {
+        let link = document.createElement('a')
+        link.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.results, null, 4))
+        link.download = '.json'
+        link.click()
       }
-      // addExpenses () {
-
-      // }
     }
   }
 </script>
@@ -123,7 +106,9 @@
     text-align: center;
     margin-bottom: 30px;
   }
-
+  .btn {
+    margin-top: 20px;
+  }
   h1, h2 {
   font-weight: normal;
 }
