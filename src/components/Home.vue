@@ -3,8 +3,8 @@
     <div class="container">
       <div class="row">
         <h2 class="title">Energy and Pitch</h2>
-        <line-chart :chart-data="datacollection"></line-chart>
-        
+        <line-chart :chart-data="energydatacollection" :height="300"></line-chart>
+        <line-chart :chart-data="pitchdatacollection" :height="300"></line-chart>
         <vue-file-input :detectPaste="false" @change="onFileInputChange">
             Open or Drag your files here
         </vue-file-input>
@@ -47,7 +47,8 @@
         energy: null,
         pitch: null,
         phoneme_location: null,
-        datacollection: null
+        energydatacollection: null,
+        pitchdatacollection: null
       }
     },
     mounted () {
@@ -62,14 +63,19 @@
         this.pitch = pitchresult
         this.phoneme_location = phonemeLocationResult
 
-        this.datacollection = {
+        this.energydatacollection = {
           labels: this.phoneme_location,
           datasets: [
             {
               label: 'Energy',
               borderColor: '#f87979',
               data: this.energy
-            },
+            }
+          ]
+        }
+        this.pitchdatacollection = {
+          labels: this.phoneme_location,
+          datasets: [
             {
               label: 'Pitch',
               borderColor: '#5bf8bf',
@@ -103,7 +109,7 @@
 
   .title {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 20px;
   }
   .subtitle {
     text-align: center;
