@@ -9,7 +9,6 @@
             Open or Drag your files here
         </vue-file-input>
         <button class="btn btn-primary" v-on:click="download">Download</button>
-
       </div>
     </div>
   </div>
@@ -89,7 +88,16 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+  div.vue-file-input {
+    outline: 2px dashed grey;
+    outline-offset: -10px;
+    background: lightcyan;
+    color: dimgray;
+    padding: 10px 10px;
+    min-height: 50px;
+    position: relative;
+    cursor: pointer;
+  }
   .title {
     text-align: center;
     margin-top: 20px;
@@ -111,19 +119,19 @@
   }
   h1, h2 {
   font-weight: normal;
-}
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
 
-a {
-  color: #42b983;
-}
+  a {
+    color: #42b983;
+  }
 </style>
